@@ -1,6 +1,12 @@
 services:
   postgres:
     image: postgres:16
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: libraryhub
+    ports:
+      - "5432:5432"
 
   app:
     build: .
