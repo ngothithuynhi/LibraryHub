@@ -5,7 +5,9 @@ const app = express();
 app.use(express.json());
 
 app.get("/", (req, res) => {
-    res.send("LibraryHub API is running");
+  res.status(200).json({
+    message: "LibraryHub API is running",
+  });
 });
 
 module.exports = app;
