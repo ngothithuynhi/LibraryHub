@@ -6,6 +6,6 @@ describe("Health API", () => {
     const res = await request(app).get("/");
 
     expect(res.statusCode).toBe(200);
-    expect(res.text).toBe("LibraryHub API is running");
+    expect(res.body.message).toBe("LibraryHub API is running");
   });
 });
