@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1783946916258" clover="3.2.0">
+  <project timestamp="1783946916259" name="All files">
+    <metrics statements="267" coveredstatements="248" conditionals="71" coveredconditionals="59" methods="29" coveredmethods="27" elements="367" coveredelements="334" complexity="0" loc="267" ncloc="267" packages="5" files="15" classes="15"/>
+    <package name="models">
+      <metrics statements="37" coveredstatements="36" conditionals="10" coveredconditionals="7" methods="9" coveredmethods="9"/>
+      <file name="book.js" path="/app/models/book.js">
+        <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="4" count="6" type="stmt"/>
+        <line num="5" count="6" type="stmt"/>
+        <line num="13" count="6" type="stmt"/>
+        <line num="19" count="6" type="stmt"/>
+        <line num="28" count="6" type="stmt"/>
+      </file>
+      <file name="borrowrecord.js" path="/app/models/borrowrecord.js">
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="4" count="6" type="stmt"/>
+        <line num="5" count="6" type="stmt"/>
+        <line num="13" count="6" type="stmt"/>
+        <line num="18" count="6" type="stmt"/>
+        <line num="24" count="6" type="stmt"/>
+        <line num="34" count="6" type="stmt"/>
+      </file>
+      <file name="index.js" path="/app/models/index.js">
+        <metrics statements="21" coveredstatements="20" conditionals="10" coveredconditionals="7" methods="3" coveredmethods="3"/>
+        <line num="3" count="6" type="stmt"/>
+        <line num="4" count="6" type="stmt"/>
+        <line num="5" count="6" type="stmt"/>
+        <line num="6" count="6" type="stmt"/>
+        <line num="7" count="6" type="stmt"/>
+        <line num="8" count="6" type="cond" truecount="1" falsecount="1"/>
+        <line num="9" count="6" type="stmt"/>
+        <line num="10" count="6" type="stmt"/>
+        <line num="13" count="6" type="cond" truecount="1" falsecount="1"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="16" count="6" type="stmt"/>
+        <line num="19" count="6" type="stmt"/>
+        <line num="22" count="24" type="stmt"/>
+        <line num="30" count="18" type="stmt"/>
+        <line num="31" count="18" type="stmt"/>
+        <line num="34" count="6" type="stmt"/>
+        <line num="35" count="18" type="cond" truecount="1" falsecount="1"/>
+        <line num="36" count="18" type="stmt"/>
+        <line num="40" count="6" type="stmt"/>
+        <line num="41" count="6" type="stmt"/>
+        <line num="43" count="6" type="stmt"/>
+      </file>
+      <file name="user.js" path="/app/models/user.js">
+        <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="4" count="6" type="stmt"/>
+        <line num="5" count="6" type="stmt"/>
+        <line num="13" count="6" type="stmt"/>
+        <line num="20" count="6" type="stmt"/>
+        <line num="29" count="6" type="stmt"/>
+      </file>
+    </package>
+    <package name="src">
+      <metrics statements="23" coveredstatements="22" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
+      <file name="app.js" path="/app/src/app.js">
+        <metrics statements="23" coveredstatements="22" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="2" count="6" type="stmt"/>
+        <line num="3" count="6" type="stmt"/>
+        <line num="5" count="6" type="stmt"/>
+        <line num="7" count="6" type="stmt"/>
+        <line num="8" count="6" type="stmt"/>
+        <line num="9" count="6" type="stmt"/>
+        <line num="10" count="6" type="stmt"/>
+        <line num="11" count="6" type="stmt"/>
+        <line num="13" count="6" type="stmt"/>
+        <line num="16" count="6" type="stmt"/>
+        <line num="23" count="6" type="stmt"/>
+        <line num="26" count="6" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="33" count="6" type="stmt"/>
+        <line num="34" count="6" type="stmt"/>
+        <line num="35" count="6" type="stmt"/>
+        <line num="36" count="6" type="stmt"/>
+        <line num="37" count="6" type="stmt"/>
+        <line num="40" count="6" type="stmt"/>
+        <line num="43" count="6" type="stmt"/>
+        <line num="44" count="0" type="stmt"/>
+        <line num="49" count="6" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.controllers">
+      <metrics statements="150" coveredstatements="134" conditionals="53" coveredconditionals="45" methods="14" coveredmethods="14"/>
+      <file name="authController.js" path="/app/src/controllers/authController.js">
+        <metrics statements="35" coveredstatements="33" conditionals="17" coveredconditionals="14" methods="3" coveredmethods="3"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="2" count="6" type="stmt"/>
+        <line num="3" count="6" type="stmt"/>
+        <line num="5" count="6" type="stmt"/>
+        <line num="6" count="6" type="stmt"/>
+        <line num="8" count="6" type="stmt"/>
+        <line num="9" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="10" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="15" count="6" type="stmt"/>
+        <line num="16" count="6" type="stmt"/>
+        <line num="17" count="6" type="stmt"/>
+        <line num="19" count="6" type="cond" truecount="5" falsecount="0"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="25" count="5" type="stmt"/>
+        <line num="27" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="31" count="4" type="stmt"/>
+        <line num="33" count="4" type="stmt"/>
+        <line num="40" count="4" type="stmt"/>
+        <line num="42" count="0" type="stmt"/>
+        <line num="46" count="6" type="stmt"/>
+        <line num="47" count="3" type="stmt"/>
+        <line num="48" count="3" type="stmt"/>
+        <line num="50" count="3" type="stmt"/>
+        <line num="52" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="53" count="1" type="stmt"/>
+        <line num="56" count="2" type="stmt"/>
+        <line num="58" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="62" count="1" type="stmt"/>
+        <line num="64" count="1" type="stmt"/>
+        <line num="73" count="1" type="stmt"/>
+        <line num="84" count="0" type="stmt"/>
+        <line num="88" count="6" type="stmt"/>
+      </file>
+      <file name="bookController.js" path="/app/src/controllers/bookController.js">
+        <metrics statements="47" coveredstatements="41" conditionals="14" coveredconditionals="14" methods="6" coveredmethods="6"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="2" count="6" type="stmt"/>
+        <line num="4" count="6" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="15" count="0" type="stmt"/>
+        <line num="19" count="6" type="stmt"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="21" count="2" type="stmt"/>
+        <line num="23" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="32" count="0" type="stmt"/>
+        <line num="36" count="6" type="stmt"/>
+        <line num="37" count="2" type="stmt"/>
+        <line num="38" count="2" type="stmt"/>
+        <line num="40" count="2" type="cond" truecount="6" falsecount="0"/>
+        <line num="41" count="1" type="stmt"/>
+        <line num="44" count="1" type="stmt"/>
+        <line num="51" count="1" type="stmt"/>
+        <line num="56" count="0" type="stmt"/>
+        <line num="60" count="6" type="stmt"/>
+        <line num="61" count="2" type="stmt"/>
+        <line num="62" count="2" type="stmt"/>
+        <line num="64" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="65" count="1" type="stmt"/>
+        <line num="68" count="1" type="stmt"/>
+        <line num="70" count="1" type="stmt"/>
+        <line num="75" count="0" type="stmt"/>
+        <line num="79" count="6" type="stmt"/>
+        <line num="80" count="2" type="stmt"/>
+        <line num="81" count="2" type="stmt"/>
+        <line num="83" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="84" count="1" type="stmt"/>
+        <line num="87" count="1" type="stmt"/>
+        <line num="89" count="1" type="stmt"/>
+        <line num="93" count="0" type="stmt"/>
+        <line num="97" count="6" type="stmt"/>
+        <line num="98" count="2" type="stmt"/>
+        <line num="99" count="2" type="stmt"/>
+        <line num="101" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="102" count="1" type="stmt"/>
+        <line num="107" count="1" type="stmt"/>
+        <line num="118" count="1" type="stmt"/>
+        <line num="123" count="0" type="stmt"/>
+        <line num="127" count="6" type="stmt"/>
+      </file>
+      <file name="borrowController.js" path="/app/src/controllers/borrowController.js">
+        <metrics statements="60" coveredstatements="53" conditionals="20" coveredconditionals="16" methods="4" coveredmethods="4"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="3" count="6" type="stmt"/>
+        <line num="4" count="4" type="stmt"/>
+        <line num="6" count="4" type="stmt"/>
+        <line num="7" count="4" type="stmt"/>
+        <line num="8" count="4" type="stmt"/>
+        <line num="10" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="15" count="3" type="stmt"/>
+        <line num="17" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="22" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="50" count="0" type="stmt"/>
+        <line num="51" count="0" type="stmt"/>
+        <line num="55" count="6" type="stmt"/>
+        <line num="56" count="5" type="stmt"/>
+        <line num="58" count="5" type="stmt"/>
+        <line num="59" count="5" type="stmt"/>
+        <line num="60" count="5" type="stmt"/>
+        <line num="62" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="63" count="1" type="stmt"/>
+        <line num="64" count="1" type="stmt"/>
+        <line num="67" count="4" type="stmt"/>
+        <line num="69" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="70" count="1" type="stmt"/>
+        <line num="71" count="1" type="stmt"/>
+        <line num="74" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="75" count="1" type="stmt"/>
+        <line num="76" count="1" type="stmt"/>
+        <line num="79" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="80" count="1" type="stmt"/>
+        <line num="81" count="1" type="stmt"/>
+        <line num="84" count="1" type="stmt"/>
+        <line num="86" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="87" count="0" type="stmt"/>
+        <line num="88" count="0" type="stmt"/>
+        <line num="91" count="1" type="stmt"/>
+        <line num="99" count="1" type="stmt"/>
+        <line num="106" count="1" type="stmt"/>
+        <line num="108" count="1" type="stmt"/>
+        <line num="113" count="0" type="stmt"/>
+        <line num="114" count="0" type="stmt"/>
+        <line num="118" count="6" type="stmt"/>
+        <line num="119" count="1" type="stmt"/>
+        <line num="120" count="1" type="stmt"/>
+        <line num="122" count="1" type="stmt"/>
+        <line num="127" count="1" type="stmt"/>
+        <line num="129" count="1" type="stmt"/>
+        <line num="131" count="1" type="stmt"/>
+        <line num="138" count="1" type="stmt"/>
+        <line num="143" count="0" type="stmt"/>
+        <line num="149" count="6" type="stmt"/>
+      </file>
+      <file name="recommendationController.js" path="/app/src/controllers/recommendationController.js">
+        <metrics statements="8" coveredstatements="7" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="3" count="6" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="6" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="12" count="0" type="stmt"/>
+        <line num="19" count="6" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.middlewares">
+      <metrics statements="18" coveredstatements="18" conditionals="8" coveredconditionals="7" methods="2" coveredmethods="2"/>
+      <file name="authMiddleware.js" path="/app/src/middlewares/authMiddleware.js">
+        <metrics statements="18" coveredstatements="18" conditionals="8" coveredconditionals="7" methods="2" coveredmethods="2"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="3" count="6" type="stmt"/>
+        <line num="4" count="21" type="stmt"/>
+        <line num="5" count="21" type="stmt"/>
+        <line num="7" count="21" type="cond" truecount="2" falsecount="0"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="11" count="20" type="stmt"/>
+        <line num="13" count="20" type="cond" truecount="2" falsecount="0"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="17" count="19" type="cond" truecount="1" falsecount="1"/>
+        <line num="19" count="18" type="stmt"/>
+        <line num="24" count="18" type="stmt"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="30" count="6" type="stmt"/>
+        <line num="31" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="35" count="7" type="stmt"/>
+        <line num="38" count="6" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.routes">
+      <metrics statements="39" coveredstatements="38" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
+      <file name="adminRoutes.js" path="/app/src/routes/adminRoutes.js">
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="2" count="6" type="stmt"/>
+        <line num="4" count="6" type="stmt"/>
+        <line num="6" count="6" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="12" count="6" type="stmt"/>
+      </file>
+      <file name="authRoutes.js" path="/app/src/routes/authRoutes.js">
+        <metrics statements="9" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="2" count="6" type="stmt"/>
+        <line num="3" count="6" type="stmt"/>
+        <line num="5" count="6" type="stmt"/>
+        <line num="30" count="6" type="stmt"/>
+        <line num="53" count="6" type="stmt"/>
+        <line num="55" count="6" type="stmt"/>
+        <line num="56" count="0" type="stmt"/>
+        <line num="61" count="6" type="stmt"/>
+      </file>
+      <file name="bookRoutes.js" path="/app/src/routes/bookRoutes.js">
+        <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="9" count="6" type="stmt"/>
+        <line num="11" count="6" type="stmt"/>
+        <line num="13" count="6" type="stmt"/>
+        <line num="25" count="6" type="stmt"/>
+        <line num="42" count="6" type="stmt"/>
+        <line num="60" count="6" type="stmt"/>
+        <line num="89" count="6" type="stmt"/>
+        <line num="109" count="6" type="stmt"/>
+        <line num="129" count="6" type="stmt"/>
+        <line num="131" count="6" type="stmt"/>
+      </file>
+      <file name="borrowRoutes.js" path="/app/src/routes/borrowRoutes.js">
+        <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="2" count="6" type="stmt"/>
+        <line num="8" count="6" type="stmt"/>
+        <line num="10" count="6" type="stmt"/>
+        <line num="12" count="6" type="stmt"/>
+        <line num="13" count="6" type="stmt"/>
+        <line num="14" count="6" type="stmt"/>
+        <line num="16" count="6" type="stmt"/>
+      </file>
+      <file name="recommendationRoutes.js" path="/app/src/routes/recommendationRoutes.js">
+        <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="4" count="6" type="stmt"/>
+        <line num="6" count="6" type="stmt"/>
+        <line num="18" count="6" type="stmt"/>
+        <line num="20" count="6" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>
