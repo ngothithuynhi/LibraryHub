@@ -2,7 +2,7 @@
   <div class="admin-reminders-page">
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
       <div>
-        <h2 class="mb-1">Mock Overdue Reminders</h2>
+        <h2 class="mb-1">Overdue Reminders</h2>
         <p class="text-muted mb-0">
           Generate simulated reminder messages for overdue borrow records.
         </p>
@@ -50,7 +50,7 @@
                   <th>Due Date</th>
                   <th>Overdue Days</th>
                   <th>Fine</th>
-                  <th>Mock Message</th>
+                  <th>Message</th>
                 </tr>
               </thead>
 

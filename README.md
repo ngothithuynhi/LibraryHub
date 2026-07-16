@@ -40,7 +40,7 @@ The project targets **Level 2** and applies a **CMMI Level 2-oriented process im
 - Admin book management
 - Admin dashboard statistics
 - Informational overdue fine calculation
-- Mock overdue reminder generation without SMTP
+- Overdue reminder generation without SMTP
 - PostgreSQL database with Sequelize ORM
 - Python FastAPI recommendation service
 - Docker Compose multi-service environment
@@ -55,7 +55,7 @@ The project targets **Level 2** and applies a **CMMI Level 2-oriented process im
 
 - **Admin Dashboard**: admins can view total users, books, book copies, borrow records, active borrows, returned borrows, overdue records, and estimated informational fines.
 - **Overdue Fine Calculation**: borrow records include a nullable due date and an informational fine amount. Users can select an expected return date when borrowing. The due date must be between tomorrow and 14 days from the borrow date, and late returns calculate `overdueDays * 5000` from the selected due date.
-- **Mock Overdue Reminder**: admins can generate simulated overdue reminder messages for overdue borrow records. Demo overdue records can be created with the seed data. No real email, SMTP, payment, fine payment, or external sending is used.
+- **Overdue Reminder**: admins can generate simulated overdue reminder messages for overdue borrow records. Demo overdue records can be created with the seed data. No real email, SMTP, payment, fine payment, or external sending is used.
 
 ---
 
