@@ -60,6 +60,8 @@
                 <th>Author</th>
                 <th>Status</th>
                 <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Fine</th>
                 <th class="text-end">Action</th>
               </tr>
             </thead>
@@ -97,7 +99,20 @@
                 </td>
 
                 <td>
-                  <span class="date-text">{{ formatDate(record.createdAt) }}</span>
+                  <span class="date-text">{{ formatDate(record.borrowDate || record.createdAt) }}</span>
+                </td>
+
+                <td>
+                  <span class="date-text">{{ formatDate(record.dueDate) }}</span>
+                </td>
+
+                <td>
+                  <span class="fine-text" :class="{ overdue: shouldShowFine(record) }">
+                    {{ formatFineAmount(record.fineAmount) }}
+                  </span>
+                  <small v-if="shouldShowFine(record)" class="fine-note">
+                    {{ record.overdueDays || 0 }} day(s) late
+                  </small>
                 </td>
 
                 <td class="text-end">
@@ -160,7 +175,7 @@ export default {
 
       try {
         const res = await api.get("/borrow/history");
-        this.records = res.data.data || [];
+        this.records = this.normalizeBorrowRecords(res.data);
       } catch (error) {
         this.isError = true;
         this.message = error.response?.data?.message || "Cannot load borrow history";
@@ -168,6 +183,22 @@ export default {
         this.initialLoading = false;
         this.refreshing = false;
       }
+    },
+
+    normalizeBorrowRecords(payload) {
+      if (Array.isArray(payload?.data)) {
+        return payload.data;
+      }
+
+      if (Array.isArray(payload?.data?.borrowRecords)) {
+        return payload.data.borrowRecords;
+      }
+
+      if (Array.isArray(payload?.borrowRecords)) {
+        return payload.borrowRecords;
+      }
+
+      return [];
     },
 
     async returnBook(record) {
@@ -186,8 +217,11 @@ export default {
         const selectedRecord = this.records.find((item) => item.id === record.id);
 
         if (selectedRecord) {
-          selectedRecord.status = "returned";
-          selectedRecord.returnDate = new Date().toISOString();
+          selectedRecord.status = res.data.data?.status || "RETURNED";
+          selectedRecord.returnDate = res.data.data?.returnDate || new Date().toISOString();
+          selectedRecord.fineAmount = Number(res.data.data?.fineAmount || 0);
+          selectedRecord.overdueDays = Number(res.data.data?.overdueDays || 0);
+          selectedRecord.isOverdue = Boolean(res.data.data?.isOverdue);
         }
       } catch (error) {
         this.isError = true;
@@ -206,12 +240,20 @@ export default {
     },
 
     getStatus(record) {
-      return record.status || record.tinh_trang || "borrowed";
+      return String(record.status || record.tinh_trang || "BORROWED");
     },
 
     isReturned(record) {
-      const status = this.getStatus(record).toLowerCase();
-      return status === "returned" || status === "đã trả";
+      const status = this.getStatus(record).toUpperCase();
+      return status === "RETURNED" || status === "DA TRA" || status === "ĐÃ TRẢ";
+    },
+
+    shouldShowFine(record) {
+      return Number(record.fineAmount || 0) > 0;
+    },
+
+    formatFineAmount(value) {
+      return `${Number(value || 0).toLocaleString("en-US")} VND`;
     },
 
     formatDate(value) {
@@ -496,8 +538,21 @@ export default {
 }
 
 .author-name,
-.date-text {
+.date-text,
+.fine-text {
   color: #4b5563;
+  font-weight: 700;
+}
+
+.fine-text.overdue {
+  color: #b91c1c;
+  font-weight: 900;
+}
+
+.fine-note {
+  display: block;
+  margin-top: 4px;
+  color: #6b7280;
   font-weight: 700;
 }
 

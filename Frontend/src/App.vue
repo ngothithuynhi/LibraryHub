@@ -21,6 +21,14 @@
         <router-link
           v-if="user && Number(user.role) === 1"
           class="btn btn-warning btn-sm"
+          to="/admin/dashboard"
+        >
+          Dashboard
+        </router-link>
+
+        <router-link
+          v-if="user && Number(user.role) === 1"
+          class="btn btn-warning btn-sm"
           to="/admin/books"
         >
           Admin Books

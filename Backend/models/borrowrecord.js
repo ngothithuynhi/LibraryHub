@@ -26,7 +26,12 @@ module.exports = (sequelize, DataTypes) => {
     bookId: DataTypes.INTEGER,
     status: DataTypes.STRING,
     borrowDate: DataTypes.DATE,
-    returnDate: DataTypes.DATE
+    returnDate: DataTypes.DATE,
+    dueDate: DataTypes.DATE,
+    fineAmount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    }
   }, {
     sequelize,
     modelName: 'BorrowRecord',

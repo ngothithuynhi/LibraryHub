@@ -84,7 +84,7 @@
             <button
               class="borrow-btn"
               :disabled="book.quantity <= 0 || !token || borrowingBookId === book.id"
-              @click="borrowBook(book)"
+              @click="openBorrowConfirmation(book)"
             >
               <span v-if="borrowingBookId === book.id">Borrowing...</span>
               <span v-else-if="!token">Login to Borrow</span>
@@ -108,6 +108,95 @@
         </button>
       </div>
     </template>
+
+    <div
+      v-if="selectedBorrowBook"
+      class="borrow-modal-backdrop"
+      role="presentation"
+      @click.self="closeBorrowConfirmation"
+    >
+      <section
+        class="borrow-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="borrow-confirm-title"
+      >
+        <div class="borrow-modal-header">
+          <div>
+            <span class="modal-eyebrow">Borrow Confirmation</span>
+            <h2 id="borrow-confirm-title">Confirm your borrow</h2>
+          </div>
+
+          <button
+            class="modal-close-btn"
+            type="button"
+            aria-label="Close borrow confirmation"
+            :disabled="borrowingBookId === selectedBorrowBook.id"
+            @click="closeBorrowConfirmation"
+          >
+            x
+          </button>
+        </div>
+
+        <div class="borrow-summary">
+          <div class="summary-row">
+            <span>Book title</span>
+            <strong>{{ selectedBorrowBook.title }}</strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Borrow date</span>
+            <strong>{{ borrowDatePreview }}</strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Expected return date / Due date</span>
+            <div>
+              <input
+                v-model="selectedDueDate"
+                class="due-date-input"
+                type="date"
+                :min="minDueDate"
+                :max="maxDueDate"
+                @input="validateSelectedDueDate"
+              />
+              <small class="due-date-help">
+                Choose a date from {{ formatDateOnly(minDueDate) }} to
+                {{ formatDateOnly(maxDueDate) }}.
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <p v-if="dueDateValidationMessage" class="borrow-validation-message">
+          {{ dueDateValidationMessage }}
+        </p>
+
+        <p class="borrow-note">
+          Please return this book before the due date to avoid overdue fine.
+        </p>
+
+        <div class="borrow-modal-actions">
+          <button
+            class="cancel-borrow-btn"
+            type="button"
+            :disabled="borrowingBookId === selectedBorrowBook.id"
+            @click="closeBorrowConfirmation"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="confirm-borrow-btn"
+            type="button"
+            :disabled="borrowingBookId === selectedBorrowBook.id"
+            @click="confirmBorrow"
+          >
+            {{ borrowingBookId === selectedBorrowBook.id ? "Borrowing..." : "Confirm Borrow" }}
+          </button>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -125,6 +214,9 @@ export default {
       refreshing: false,
       searching: false,
       borrowingBookId: null,
+      selectedBorrowBook: null,
+      selectedDueDate: "",
+      dueDateValidationMessage: "",
       token: localStorage.getItem("token"),
     };
   },
@@ -132,6 +224,18 @@ export default {
   computed: {
     availableBooks() {
       return this.books.filter((book) => Number(book.quantity) > 0).length;
+    },
+
+    borrowDatePreview() {
+      return this.formatDateOnly(new Date());
+    },
+
+    minDueDate() {
+      return this.formatDateInput(this.addDays(new Date(), 1));
+    },
+
+    maxDueDate() {
+      return this.formatDateInput(this.addDays(new Date(), 14));
     },
   },
 
@@ -192,27 +296,139 @@ export default {
       await this.loadBooks({ silent: true });
     },
 
+    openBorrowConfirmation(book) {
+      if (!this.token || Number(book.quantity) <= 0 || this.borrowingBookId) {
+        return;
+      }
+
+      this.message = "";
+      this.isError = false;
+      this.selectedDueDate = this.maxDueDate;
+      this.dueDateValidationMessage = "";
+      this.selectedBorrowBook = book;
+    },
+
+    closeBorrowConfirmation() {
+      if (this.borrowingBookId) {
+        return;
+      }
+
+      this.selectedBorrowBook = null;
+      this.selectedDueDate = "";
+      this.dueDateValidationMessage = "";
+    },
+
+    async confirmBorrow() {
+      if (!this.selectedBorrowBook) {
+        return;
+      }
+
+      if (!this.validateSelectedDueDate()) {
+        return;
+      }
+
+      await this.borrowBook(this.selectedBorrowBook);
+    },
+
     async borrowBook(book) {
       this.borrowingBookId = book.id;
       this.message = "";
       this.isError = false;
 
       try {
-        const res = await api.post("/borrow", { bookId: book.id });
+        const selectedDueDate = this.selectedDueDate;
+        const res = await api.post("/borrow", {
+          bookId: book.id,
+          dueDate: selectedDueDate,
+        });
+        const dueDate = selectedDueDate || this.getBorrowDueDateFromResponse(res.data);
+        const successMessage = res.data.message || "Borrow book successfully";
 
-        this.message = res.data.message || "Borrow book successfully";
+        this.message = dueDate
+          ? `${successMessage}. Due date: ${this.formatDateOnly(dueDate)}.`
+          : successMessage;
 
         const selectedBook = this.books.find((item) => item.id === book.id);
 
         if (selectedBook && selectedBook.quantity > 0) {
           selectedBook.quantity -= 1;
         }
+
+        this.selectedBorrowBook = null;
+        this.selectedDueDate = "";
+        this.dueDateValidationMessage = "";
       } catch (error) {
         this.isError = true;
         this.message = error.response?.data?.message || "Borrow failed";
+        if (this.message.toLowerCase().includes("invalid due date")) {
+          this.dueDateValidationMessage = this.message;
+        } else {
+          this.selectedBorrowBook = null;
+          this.selectedDueDate = "";
+        }
       } finally {
         this.borrowingBookId = null;
       }
+    },
+
+    validateSelectedDueDate() {
+      const selected = this.dateFromInput(this.selectedDueDate);
+      const min = this.dateFromInput(this.minDueDate);
+      const max = this.dateFromInput(this.maxDueDate);
+
+      if (!selected || selected < min || selected > max) {
+        this.dueDateValidationMessage =
+          "Invalid due date. Please choose a date between tomorrow and 14 days from today.";
+        return false;
+      }
+
+      this.dueDateValidationMessage = "";
+      return true;
+    },
+
+    getBorrowDueDateFromResponse(payload) {
+      return payload?.dueDate || payload?.borrowRecord?.dueDate || payload?.data?.dueDate;
+    },
+
+    addDays(date, days) {
+      const result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    },
+
+    dateFromInput(value) {
+      if (!value) return null;
+
+      const [year, month, day] = String(value).split("-").map(Number);
+
+      if (!year || !month || !day) {
+        return null;
+      }
+
+      return new Date(year, month - 1, day);
+    },
+
+    formatDateInput(value) {
+      const date = new Date(value);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
+    },
+
+    formatDateOnly(value) {
+      if (!value) return "N/A";
+
+      const date = typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)
+        ? this.dateFromInput(value)
+        : new Date(value);
+
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+      });
     },
 
     getBookInitial(title) {
@@ -555,6 +771,179 @@ export default {
   color: #111827;
 }
 
+.borrow-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(17, 24, 39, 0.58);
+}
+
+.borrow-modal {
+  width: min(100%, 500px);
+  padding: 24px;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.32);
+}
+
+.borrow-modal-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.modal-eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #b71c1c;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.borrow-modal h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.modal-close-btn {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border: none;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.modal-close-btn:hover:not(:disabled) {
+  background: #fee2e2;
+  color: #b71c1c;
+}
+
+.borrow-summary {
+  overflow: hidden;
+  border: 1px solid #fee2e2;
+  border-radius: 18px;
+  background: #fff7f6;
+}
+
+.summary-row {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #fee2e2;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-row span {
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.summary-row strong {
+  color: #111827;
+  font-weight: 900;
+}
+
+.due-date-input {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #111827;
+  font-weight: 800;
+}
+
+.due-date-input:focus {
+  border-color: #b71c1c;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(183, 28, 28, 0.14);
+}
+
+.due-date-help {
+  display: block;
+  margin-top: 6px;
+  color: #6b7280;
+  font-weight: 700;
+}
+
+.borrow-validation-message {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-weight: 800;
+}
+
+.borrow-note {
+  margin: 16px 0 0;
+  color: #7f1d1d;
+  font-weight: 800;
+}
+
+.borrow-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.cancel-borrow-btn,
+.confirm-borrow-btn {
+  min-height: 44px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 999px;
+  font-weight: 900;
+  transition: 0.2s ease;
+}
+
+.cancel-borrow-btn {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.cancel-borrow-btn:hover:not(:disabled) {
+  background: #e5e7eb;
+}
+
+.confirm-borrow-btn {
+  background: #b71c1c;
+  color: #ffffff;
+}
+
+.confirm-borrow-btn:hover:not(:disabled) {
+  background: #8f1414;
+  transform: translateY(-1px);
+}
+
+.cancel-borrow-btn:disabled,
+.confirm-borrow-btn:disabled,
+.modal-close-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -617,6 +1006,15 @@ export default {
 
   .book-cover {
     min-height: 110px;
+  }
+
+  .summary-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .borrow-modal-actions {
+    flex-direction: column;
   }
 }
 </style>

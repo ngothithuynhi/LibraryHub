@@ -5,7 +5,9 @@ import Register from "../components/Auth/Register.vue";
 import BookList from "../components/Users/BookList.vue";
 import BorrowHistory from "../components/Users/BorrowHistory.vue";
 import Profile from "../components/Users/Profile.vue";
+import AdminDashboard from "../components/Admin/AdminDashboard.vue";
 import AdminBook from "../components/Admin/AdminBook.vue";
+import AdminOverdueReminders from "../components/Admin/AdminOverdueReminders.vue";
 import AdminUser from "../components/Admin/AdminUser.vue";
 
 const routes = [
@@ -34,8 +36,16 @@ const routes = [
     component: Profile,
   },
   {
+    path: "/admin/dashboard",
+    component: AdminDashboard,
+  },
+  {
     path: "/admin/books",
     component: AdminBook,
+  },
+  {
+    path: "/admin/reminders",
+    component: AdminOverdueReminders,
   },
   {
     path: "/admin/users",

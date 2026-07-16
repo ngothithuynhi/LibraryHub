@@ -1,4 +1,9 @@
-const { User } = require("../../models");
+const { Op } = require("sequelize");
+const { User, Book, BorrowRecord } = require("../../models");
+const {
+  calculateFineAmount,
+  calculateOverdueDays,
+} = require("../utils/fineCalculator");
 
 const ROLE_ADMIN = 1;
 const ROLE_USER = 2;
@@ -83,7 +88,119 @@ const updateUserRole = async (req, res) => {
   }
 };
 
+const getDashboardStats = async (req, res) => {
+  try {
+    const now = new Date();
+
+    const [
+      totalUsers,
+      totalBooks,
+      totalBookQuantity,
+      totalBorrowRecords,
+      activeBorrowRecords,
+      returnedBorrowRecords,
+      overdueRecords,
+      returnedFineTotal,
+    ] = await Promise.all([
+      User.count(),
+      Book.count(),
+      Book.sum("quantity"),
+      BorrowRecord.count(),
+      BorrowRecord.count({ where: { status: "BORROWED" } }),
+      BorrowRecord.count({ where: { status: "RETURNED" } }),
+      BorrowRecord.findAll({
+        where: {
+          status: "BORROWED",
+          dueDate: {
+            [Op.lt]: now,
+          },
+        },
+      }),
+      BorrowRecord.sum("fineAmount", {
+        where: {
+          status: "RETURNED",
+        },
+      }),
+    ]);
+
+    const activeOverdueFineTotal = overdueRecords.reduce((total, record) => {
+      return total + calculateFineAmount(record.dueDate, now);
+    }, 0);
+
+    return res.status(200).json({
+      message: "Dashboard statistics retrieved successfully",
+      data: {
+        totalUsers,
+        totalBooks,
+        totalBookQuantity: Number(totalBookQuantity || 0),
+        totalBorrowRecords,
+        activeBorrowRecords,
+        returnedBorrowRecords,
+        overdueBorrowRecords: overdueRecords.length,
+        estimatedTotalFine: Number(returnedFineTotal || 0) + activeOverdueFineTotal,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const getOverdueReminders = async (req, res) => {
+  try {
+    const now = new Date();
+
+    const overdueRecords = await BorrowRecord.findAll({
+      where: {
+        status: "BORROWED",
+        dueDate: {
+          [Op.lt]: now,
+        },
+      },
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "name", "email"],
+        },
+        {
+          model: Book,
+          as: "book",
+          attributes: ["id", "title"],
+        },
+      ],
+      order: [["dueDate", "ASC"]],
+    });
+
+    const data = overdueRecords.map((record) => {
+      const overdueDays = calculateOverdueDays(record.dueDate, now);
+      const fineAmount = calculateFineAmount(record.dueDate, now);
+      const userName = record.user?.name || "LibraryHub user";
+      const userEmail = record.user?.email || "";
+      const bookTitle = record.book?.title || "Unknown book";
+
+      return {
+        userName,
+        userEmail,
+        bookTitle,
+        dueDate: record.dueDate,
+        overdueDays,
+        fineAmount,
+        message: `Dear ${userName}, your borrowed book '${bookTitle}' is overdue by ${overdueDays} day(s). Please return it as soon as possible.`,
+      };
+    });
+
+    return res.status(200).json({
+      message: "Overdue reminders generated successfully",
+      data,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getUsers,
+  getDashboardStats,
+  getOverdueReminders,
   updateUserRole,
 };

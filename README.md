@@ -26,7 +26,7 @@ The project targets **Level 2** and applies a **CMMI Level 2-oriented process im
 | Docker Compose | Backend, Frontend, PostgreSQL, Python service |
 | GitHub Actions CI | Backend test + Frontend build passed |
 | SonarQube | Code quality dashboard and coverage |
-| Testing coverage ≥ 80% | Jest line coverage 92.88% |
+| Testing coverage ≥ 80% | Jest line coverage 92.46% |
 
 ---
 
@@ -35,9 +35,12 @@ The project targets **Level 2** and applies a **CMMI Level 2-oriented process im
 - JWT authentication and authorization
 - Role-based access control: **Admin = 1**, **User = 2**
 - Book listing and searching
-- Borrow and return book workflow
+- Borrow and return book workflow with user-selected expected return date / due date visibility
 - Borrow history page
 - Admin book management
+- Admin dashboard statistics
+- Informational overdue fine calculation
+- Mock overdue reminder generation without SMTP
 - PostgreSQL database with Sequelize ORM
 - Python FastAPI recommendation service
 - Docker Compose multi-service environment
@@ -45,6 +48,14 @@ The project targets **Level 2** and applies a **CMMI Level 2-oriented process im
 - Jest + Supertest integration testing
 - SonarQube code quality analysis
 - SPQM/CMMI process evidence
+
+---
+
+### 3.1 Advanced Demo Features
+
+- **Admin Dashboard**: admins can view total users, books, book copies, borrow records, active borrows, returned borrows, overdue records, and estimated informational fines.
+- **Overdue Fine Calculation**: borrow records include a nullable due date and an informational fine amount. Users can select an expected return date when borrowing. The due date must be between tomorrow and 14 days from the borrow date, and late returns calculate `overdueDays * 5000` from the selected due date.
+- **Mock Overdue Reminder**: admins can generate simulated overdue reminder messages for overdue borrow records. Demo overdue records can be created with the seed data. No real email, SMTP, payment, fine payment, or external sending is used.
 
 ---
 
@@ -196,6 +207,15 @@ docker compose exec backend npx sequelize-cli db:migrate --env test
 docker compose exec backend npx sequelize-cli db:seed:all
 ```
 
+The seeder includes demo overdue borrow records for the Mock Overdue Reminders page.
+
+Demo overdue users:
+
+| Email | Password |
+|---|---|
+| overdue.user@libraryhub.com | 123456 |
+| overdue.user.2@libraryhub.com | 123456 |
+
 If seed data already exists and needs to be reset:
 
 ```powershell
@@ -233,6 +253,8 @@ Relationship:
 Users.id 1 ---- * BorrowRecords.userId
 Books.id 1 ---- * BorrowRecords.bookId
 ```
+
+`BorrowRecords` also stores `dueDate` and `fineAmount` for informational overdue tracking. Existing records are migration-safe because `dueDate` is nullable and `fineAmount` defaults to 0.
 
 ### 8.2 ERD
 
@@ -282,9 +304,18 @@ For test database:
 
 | Method | Endpoint | Description |
 |---|---|---|
-| POST | `/api/borrow` | Borrow a book |
+| POST | `/api/borrow` | Borrow a book with an optional selected due date and receive the due date in the response |
 | POST | `/api/borrow/return` | Return a borrowed book |
-| GET | `/api/borrow/history` | View user's borrow history |
+| GET | `/api/borrow/history` | View user's borrow history with due date and informational fine data |
+
+### Admin
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/admin/dashboard/stats` | View admin dashboard statistics, admin only |
+| GET | `/api/admin/reminders/overdue` | Generate mock overdue reminder messages, admin only |
+| GET | `/api/admin/users` | View users, admin only |
+| PATCH | `/api/admin/users/:id/role` | Update editable user role, admin only |
 
 ### Recommendation
 
@@ -310,12 +341,12 @@ docker compose exec backend npm test
 
 | Metric | Result |
 |---|---:|
-| Test Suites | 6 passed / 6 total |
-| Tests | 34 passed / 34 total |
-| Statement Coverage | 92.19% |
-| Branch Coverage | 83.09% |
-| Function Coverage | 93.10% |
-| Line Coverage | 92.88% |
+| Test Suites | 8 passed / 8 total |
+| Tests | 47 passed / 47 total |
+| Statement Coverage | 91.4% |
+| Branch Coverage | 79.27% |
+| Function Coverage | 97.36% |
+| Line Coverage | 92.46% |
 
 ![Test Coverage](docs/images/test-coverage.png)
 
@@ -413,8 +444,8 @@ Main quality metrics:
 
 | Metric | Baseline | Final Result | Target |
 |---|---:|---:|---:|
-| Test Count | 0 | 34 passed | Increase |
-| Line Coverage | 0% | 92.88% | >= 80% |
+| Test Count | 0 | 47 passed | Increase |
+| Line Coverage | 0% | 92.46% | >= 80% |
 | SonarQube Coverage | N/A | 89.2% | >= 80% |
 | Duplication | N/A | 0.0% | < 3% |
 | GitHub Actions | Failed initially | Passed | Passed |
