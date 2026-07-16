@@ -8,9 +8,15 @@
         </p>
       </div>
 
-      <button class="btn btn-outline-primary" @click="loadBooks">
-        Reload
-      </button>
+      <div class="d-flex gap-2">
+        <router-link class="btn btn-outline-secondary" to="/admin/users">
+          Manage Users
+        </router-link>
+
+        <button class="btn btn-outline-primary" @click="loadBooks">
+          Reload
+        </button>
+      </div>
     </div>
 
     <div v-if="!adminPermission" class="alert alert-danger">

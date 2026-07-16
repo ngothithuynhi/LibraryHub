@@ -4,7 +4,9 @@ import Login from "../components/Auth/Login.vue";
 import Register from "../components/Auth/Register.vue";
 import BookList from "../components/Users/BookList.vue";
 import BorrowHistory from "../components/Users/BorrowHistory.vue";
+import Profile from "../components/Users/Profile.vue";
 import AdminBook from "../components/Admin/AdminBook.vue";
+import AdminUser from "../components/Admin/AdminUser.vue";
 
 const routes = [
   {
@@ -28,8 +30,16 @@ const routes = [
     component: BorrowHistory,
   },
   {
+    path: "/profile",
+    component: Profile,
+  },
+  {
     path: "/admin/books",
     component: AdminBook,
+  },
+  {
+    path: "/admin/users",
+    component: AdminUser,
   },
 ];
 

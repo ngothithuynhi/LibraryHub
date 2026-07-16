@@ -14,12 +14,24 @@
           My Borrows
         </router-link>
 
+        <router-link v-if="user" class="btn btn-outline-light btn-sm" to="/profile">
+          Profile
+        </router-link>
+
         <router-link
           v-if="user && Number(user.role) === 1"
           class="btn btn-warning btn-sm"
           to="/admin/books"
         >
-          Admin
+          Admin Books
+        </router-link>
+
+        <router-link
+          v-if="user && Number(user.role) === 1"
+          class="btn btn-warning btn-sm"
+          to="/admin/users"
+        >
+          Users
         </router-link>
 
         <router-link v-if="!user" class="btn btn-outline-light btn-sm" to="/login">
@@ -47,7 +59,7 @@
 </template>
 
 <script>
-import { getRoleName } from "./router/checkToken";
+import { getRoleName, getUser, logout } from "./router/checkToken";
 
 export default {
   data() {
@@ -64,13 +76,11 @@ export default {
     getRoleName,
 
     loadUser() {
-      const storedUser = localStorage.getItem("user");
-      this.user = storedUser ? JSON.parse(storedUser) : null;
+      this.user = getUser();
     },
 
     handleLogout() {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      logout();
       this.user = null;
       this.$router.push("/login");
       window.location.reload();

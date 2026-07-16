@@ -131,6 +131,49 @@ describe("Auth API", () => {
     expect(res.body.message).toBe("Unauthorized");
   });
 
+  test("GET /api/auth/me should return current user information", async () => {
+    const user = await User.create({
+      name: "Profile User",
+      email: "profile@test.com",
+      password: "hashed",
+      role: "2",
+    });
+
+    const token = jwt.sign(
+      { id: user.id, role: 2 },
+      process.env.JWT_SECRET || "secret",
+      { expiresIn: "1d" },
+    );
+
+    const res = await request(app)
+      .get("/api/auth/me")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.user).toMatchObject({
+      id: user.id,
+      name: "Profile User",
+      email: "profile@test.com",
+      role: 2,
+    });
+    expect(res.body.user.password).toBeUndefined();
+  });
+
+  test("GET /api/auth/me should reject token for missing user", async () => {
+    const token = jwt.sign(
+      { id: 999999, role: 2 },
+      process.env.JWT_SECRET || "secret",
+      { expiresIn: "1d" },
+    );
+
+    const res = await request(app)
+      .get("/api/auth/me")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(404);
+    expect(res.body.message).toBe("User not found");
+  });
+
   test("GET /api/admin/test should reject normal user", async () => {
     const user = await User.create({
       name: "Normal User",
@@ -173,5 +216,120 @@ describe("Auth API", () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toBe("Admin route works");
+  });
+
+  test("GET /api/admin/users should return users without passwords", async () => {
+    const admin = await User.create({
+      name: "Admin User",
+      email: "admin-users@test.com",
+      password: "hashed",
+      role: "1",
+    });
+
+    await User.create({
+      name: "Normal User",
+      email: "normal-users@test.com",
+      password: "hashed",
+      role: "2",
+    });
+
+    const token = jwt.sign(
+      { id: admin.id, role: 1 },
+      process.env.JWT_SECRET || "secret",
+      { expiresIn: "1d" },
+    );
+
+    const res = await request(app)
+      .get("/api/admin/users")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.message).toBe("Get users successfully");
+    expect(res.body.data).toHaveLength(2);
+    expect(res.body.data[0].password).toBeUndefined();
+  });
+
+  test("PATCH /api/admin/users/:id/role should update normal user to another non-admin role", async () => {
+    const admin = await User.create({
+      name: "Admin User",
+      email: "admin-update-user@test.com",
+      password: "hashed",
+      role: "1",
+    });
+
+    const user = await User.create({
+      name: "Normal User",
+      email: "normal-update-user@test.com",
+      password: "hashed",
+      role: "2",
+    });
+
+    const token = jwt.sign(
+      { id: admin.id, role: 1 },
+      process.env.JWT_SECRET || "secret",
+      { expiresIn: "1d" },
+    );
+
+    const res = await request(app)
+      .patch(`/api/admin/users/${user.id}/role`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ role: 3 });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.message).toBe("Update user role successfully");
+    expect(res.body.data.role).toBe(3);
+  });
+
+  test("PATCH /api/admin/users/:id/role should reject editing admin role", async () => {
+    const admin = await User.create({
+      name: "Admin User",
+      email: "admin-protected@test.com",
+      password: "hashed",
+      role: "1",
+    });
+
+    const token = jwt.sign(
+      { id: admin.id, role: 1 },
+      process.env.JWT_SECRET || "secret",
+      { expiresIn: "1d" },
+    );
+
+    const res = await request(app)
+      .patch(`/api/admin/users/${admin.id}/role`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ role: 2 });
+
+    expect(res.statusCode).toBe(403);
+    expect(res.body.message).toBe("Admin role cannot be edited");
+  });
+
+  test("PATCH /api/admin/users/:id/role should reject assigning admin role", async () => {
+    const admin = await User.create({
+      name: "Admin User",
+      email: "admin-assign-role@test.com",
+      password: "hashed",
+      role: "1",
+    });
+
+    const user = await User.create({
+      name: "Normal User",
+      email: "normal-assign-role@test.com",
+      password: "hashed",
+      role: "2",
+    });
+
+    const token = jwt.sign(
+      { id: admin.id, role: 1 },
+      process.env.JWT_SECRET || "secret",
+      { expiresIn: "1d" },
+    );
+
+    const res = await request(app)
+      .patch(`/api/admin/users/${user.id}/role`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ role: 1 });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.message).toBe("Selected role cannot be assigned");
   });
 });

@@ -12,12 +12,17 @@ export function getUser() {
     return null;
   }
 
-  const parsedUser = JSON.parse(user);
+  try {
+    const parsedUser = JSON.parse(user);
 
-  return {
-    ...parsedUser,
-    role: Number(parsedUser.role),
-  };
+    return {
+      ...parsedUser,
+      role: Number(parsedUser.role),
+    };
+  } catch (error) {
+    logout();
+    return null;
+  }
 }
 
 export function isAdmin() {
